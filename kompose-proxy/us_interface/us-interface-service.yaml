@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -f docker-compose-proxy.yml -o kompose-proxy/
+    kompose.version: 1.26.0 (HEAD)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: us-interface
+  name: us-interface
+spec:
+  ports:
+    - name: "3000"
+      port: 3000
+      targetPort: 3000
+  selector:
+    io.kompose.service: us-interface
+status:
+  loadBalancer: {}

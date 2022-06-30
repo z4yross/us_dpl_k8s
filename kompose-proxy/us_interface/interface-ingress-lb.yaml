@@ -1,0 +1,12 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: interface-ingress-lb
+spec:
+  type: LoadBalancer
+  selector:
+    io.kompose.service: us-interface
+  ports:
+    - port: 3000
+      targetPort: 3000
+  

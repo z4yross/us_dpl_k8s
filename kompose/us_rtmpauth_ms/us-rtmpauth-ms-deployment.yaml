@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -o kompose/
+    kompose.version: 1.26.0 (HEAD)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: us-rtmpauth-ms
+  name: us-rtmpauth-ms
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: us-rtmpauth-ms
+  strategy: {}
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert -o kompose/
+        kompose.version: 1.26.0 (HEAD)
+      creationTimestamp: null
+      labels:
+        io.kompose.network/un-stream-nw: "true"
+        io.kompose.service: us-rtmpauth-ms
+    spec:
+      containers:
+        - args:
+            - sh
+            - -c
+            - /bin/wait-for-it.sh us-notification-mq:5672 --timeout=30 -- node ./dist-server/bin/www
+          env:
+            - name: QUEUE_URLkub
+              value: us-notification-mqkube
+          image: z4yross/us_rtmpauth_ms
+          name: us-rtmpauth-ms
+          ports:
+            - containerPort: 8228
+          resources: {}
+      restartPolicy: Always
+      imagePullSecrets:
+        - name: docker-hub
+status: {}

@@ -1,0 +1,14 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: interface-ingress
+  annotations:
+    kubernetes.io/ingress.global-static-ip-name: "interface-ip"
+spec:
+  ingressClassName: interface-nginx
+  defaultBackend:
+    service:
+      name: mc-service
+      port:
+        number: 3000
+

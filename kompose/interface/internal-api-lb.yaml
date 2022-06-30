@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: pilb-api-service
+  annotations:
+    networking.gke.io/load-balancer-type: "Internal"
+  labels:
+    io.kompose.service: private-api-internallb
+spec:
+  type: LoadBalancer
+  selector:
+    io.kompose.service: us-ag
+  ports:
+  - port: 80
+    targetPort: 5000
+    protocol: TCP

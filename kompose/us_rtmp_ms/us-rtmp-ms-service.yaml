@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -o kompose/
+    kompose.version: 1.26.0 (HEAD)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: us-rtmp-ms
+  name: us-rtmp-ms
+spec:
+  ports:
+    - name: "1935"
+      port: 1935
+      targetPort: 1935
+    - name: "8080"
+      port: 8080
+      targetPort: 8080
+  selector:
+    io.kompose.service: us-rtmp-ms
+status:
+  loadBalancer: {}

@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -o kompose/
+    kompose.version: 1.26.0 (HEAD)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: us-hls-ms
+  name: us-hls-ms
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: us-hls-ms
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert -o kompose/
+        kompose.version: 1.26.0 (HEAD)
+      creationTimestamp: null
+      labels:
+        io.kompose.network/un-stream-nw: "true"
+        io.kompose.service: us-hls-ms
+    spec:
+      containers:
+        - image: z4yross/us_hls_ms
+          name: us-hls-ms
+          ports:
+            - containerPort: 8282
+            - containerPort: 8283
+          resources: {}
+          volumeMounts:
+            - mountPath: /var/tmp/hls
+              name: hls-volume
+      restartPolicy: Always
+      volumes:
+        - name: hls-volume
+          persistentVolumeClaim:
+            claimName: hls-volume
+      imagePullSecrets:
+        - name: docker-hub
+status: {}

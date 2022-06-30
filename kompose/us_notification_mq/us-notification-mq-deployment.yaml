@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -o kompose/
+    kompose.version: 1.26.0 (HEAD)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: us-notification-mq
+  name: us-notification-mq
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: us-notification-mq
+  strategy: {}
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert -o kompose/
+        kompose.version: 1.26.0 (HEAD)
+      creationTimestamp: null
+      labels:
+        io.kompose.network/un-stream-nw: "true"
+        io.kompose.service: us-notification-mq
+    spec:
+      containers:
+        - image: rabbitmq:3-management-alpine
+          livenessProbe:
+            exec:
+              command:
+                - rabbitmq-diagnostics
+                - -q
+                - ping
+            failureThreshold: 1
+            periodSeconds: 5
+            timeoutSeconds: 15
+          name: us-notification-mq
+          ports:
+            - containerPort: 5672
+            - containerPort: 15672
+          resources: {}
+      restartPolicy: Always
+      imagePullSecrets:
+        - name: docker-hub
+status: {}

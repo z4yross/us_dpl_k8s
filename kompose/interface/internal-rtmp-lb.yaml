@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: pilb-rtmp-service
+  annotations:
+    networking.gke.io/load-balancer-type: "Internal"
+  labels:
+    io.kompose.service: private-rtmp-internallb
+spec:
+  type: LoadBalancer
+  selector:
+    io.kompose.service: us-rtmp-ms
+  ports:
+  - port: 1935
+    targetPort: 1935
+    protocol: TCP

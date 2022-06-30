@@ -1,0 +1,71 @@
+# apiVersion: apps/v1
+# kind: StatefulSet
+# metadata:
+#   name: us-session-db
+# spec:
+#   serviceName: us-session-db
+#   selector:
+#     matchLabels:
+#       app: us-session-db
+#   replicas: 2
+#   template:
+#     metadata:
+#       labels:
+#         app: us-session-db
+#     spec:
+#       containers:
+#         - name: us-session-db
+#           image: postgres:latest
+#           volumeMounts:
+#             - name: us-session-db-disk
+#               mountPath: /data
+#           # Config from ConfigMapF
+#           envFrom:
+#             - configMapRef:
+#                 name: us-session-db-config
+#       volumes:
+#       - name: us-session-data
+#         persistentVolumeClaim:
+#           claimName: postgres-pv-claim
+#   resources:
+#   requests:
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: us-session-db
+spec:
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+    type: RollingUpdate
+  replicas: 2
+  selector:
+    matchLabels:
+      app: us-session-db
+  template:
+    metadata:
+      labels:
+        app: us-session-db
+    spec:
+      containers:
+        - name: us-session-db
+          image: postgres:10
+          resources: {}
+          ports:
+            - containerPort: 5432
+          envFrom:
+            - configMapRef:
+                name: us-session-db-config
+          # env:
+          #   - name: POSTGRES_PASSWORD
+          #     value: password
+          #   - name: PGDATA
+          #     value: /var/lib/postgresql/data/pgdata
+          volumeMounts:
+            - mountPath: /var/lib/postgresql/data
+              name: us-session-db-data
+      volumes:
+        - name: us-session-db-data
+          persistentVolumeClaim:
+            claimName: session-db-pv

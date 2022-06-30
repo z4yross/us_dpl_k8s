@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert -o kompose/
+    kompose.version: 1.26.0 (HEAD)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: us-web-fe
+  name: us-web-fe
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: us-web-fe
+  strategy: {}
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: kompose convert -o kompose/
+        kompose.version: 1.26.0 (HEAD)
+      creationTimestamp: null
+      labels:
+        io.kompose.network/un-stream-nw: "true"
+        io.kompose.service: us-web-fe
+    spec:
+      containers:
+        - image: z4yross/us_web_fe
+          name: us-web-fe
+          ports:
+            - containerPort: 80
+          resources: {}
+      restartPolicy: Always
+      imagePullSecrets:
+        - name: docker-hub
+status: {}
+
